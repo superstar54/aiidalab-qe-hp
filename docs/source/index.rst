@@ -9,6 +9,7 @@ AiiDA plugin for `Bader <https://theory.cm.utexas.edu/henkelman/code/bader/>`_ c
    :caption: Contents:
 
    installation
+   hp
 
 
 
