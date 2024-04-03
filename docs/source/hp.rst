@@ -4,7 +4,7 @@ How to calculate Hubbard parameters
 
 Overview
 ========
-This tutorial will guide you through the process of setting up and running Hubbard parameters calculation for LiCoO2.
+This tutorial will guide you through the process of setting up and running Hubbard parameters calculation for LiCoO\ :sub:`2`.
 
 
 Steps
@@ -15,7 +15,7 @@ To start, go ahead and :doc:`launch </installation/launch>` the app, then follow
 
 Step 1 Select a structure
 --------------------------------
-For this tutorial task, please use the `From Examples` tab, and select the LiCoO2 structure.
+For this tutorial task, please use the `From Examples` tab, and select the LiCoO\ :sub:`2` structure.
 
 Click the `Confirm` button to proceed.
 
@@ -32,13 +32,16 @@ In the **Basic Settings** tab, set the following parameters:
 - Set **Electronic Type** to ``Insulator``
 - In the **properties** section, select ``Habbard parameter (HP)``
 
+.. image:: ../_static/images/hp_step_2_basic_setting.png
+   :align: center
+
 
 Then go to the **HP setting** tab and, in the **Hubbard U** section, select ``Co`` by ticking the appropriate box.
 Set the **Manifold** to ``3d``.
 In the **Hubbard V** section, select first row by ticking the appropriate box.
 Set the **Manifold** to ``3d`` and ``2p`` for the **Co** atom and **O** atom, respectively.
 
-.. image:: ../_static/images/hp_step_2_setting_tab.png
+.. image:: ../_static/images/hp_step_2_hp_setting.png
    :align: center
 
 
@@ -89,7 +92,7 @@ Congratulations, you have finished this tutorial!
 
 Another example
 ====================
-NiO is another example of a material that can be used to calculate Hubbard parameters.
+Please try another example: NiO.
 
 
 Questions

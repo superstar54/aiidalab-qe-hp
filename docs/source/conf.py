@@ -18,8 +18,8 @@ sys.path.insert(0, os.path.abspath("../.."))
 
 # -- Project information -----------------------------------------------------
 
-project = "AiiDA Bader"
-copyright = "2023, Xing Wang"
+project = "AiiDAlab QEApp HP plugin"
+copyright = "2024, Xing Wang"
 author = "Xing Wang"
 
 # The full version, including alpha/beta/rc tags
@@ -37,7 +37,6 @@ extensions = [
     "sphinx.ext.coverage",
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
-    "nbsphinx",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
