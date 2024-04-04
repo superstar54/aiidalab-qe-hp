@@ -2,6 +2,12 @@ from aiida_quantumespresso.data.hubbard_structure import HubbardStructureData
 from aiida_quantumespresso.common.types import ElectronicType, SpinType
 from aiidalab_qe_hp.workflows import QeappHpWorkChain
 
+qpoints_distance_map = {
+    "fast": 1000,
+    "moderate": 500,
+    "precise": 100,
+}
+
 
 def check_codes(pw_code, hp_code):
     """Check that the codes are installed on the same computer."""
@@ -46,7 +52,6 @@ def get_builder(codes, structure, parameters, **kwargs):
     hubbard = parameters.get("hp", {})
     parallelize_atoms = hubbard.get("parallelize_atoms", False)
     parallelize_qpoints = hubbard.get("parallelize_qpoints", False)
-    qpoints_distance = hubbard.get("qpoints_distance", 1000)
     builder = QeappHpWorkChain.get_builder_from_protocol(
         pw_code=pw_code,
         hp_code=hp_code,  # modify here if you downloaded the notebook
@@ -55,7 +60,7 @@ def get_builder(codes, structure, parameters, **kwargs):
         method=method,
         parallelize_atoms=parallelize_atoms,
         parallelize_qpoints=parallelize_qpoints,
-        qpoints_distance=qpoints_distance,
+        qpoints_distance=qpoints_distance_map[protocol],
         electronic_type=ElectronicType(parameters["workchain"]["electronic_type"]),
         spin_type=SpinType(parameters["workchain"]["spin_type"]),
         initial_magnetic_moments=parameters["advanced"]["initial_magnetic_moments"],
