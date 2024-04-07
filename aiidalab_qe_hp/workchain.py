@@ -1,11 +1,21 @@
 from aiida_quantumespresso.data.hubbard_structure import HubbardStructureData
 from aiida_quantumespresso.common.types import ElectronicType, SpinType
 from aiidalab_qe_hp.workflows import QeappHpWorkChain
+from aiida_quantumespresso_hp.workflows.hubbard import SelfConsistentHubbardWorkChain
+from aiida import orm
 
-qpoints_distance_map = {
+QPOINTS_DISTANCE_MAP = {
     "fast": 1000,
     "moderate": 500,
     "precise": 100,
+}
+
+PROTOCOL_MAP_U = {"fast": 1.0, "moderate": 0.5, "precise": 0.1}
+
+PROTOCOL_MAP_V = {
+    "fast": 0.5,
+    "moderate": 0.1,
+    "precise": 0.02,
 }
 
 
@@ -43,7 +53,6 @@ def get_builder(codes, structure, parameters, **kwargs):
     hubbard_structure = HubbardStructureData.from_structure(structure)
     hubbard_u = parameters["hp"].pop("hubbard_u")
     hubbard_v = parameters["hp"].pop("hubbard_v")
-    method = parameters["hp"].pop("method")
     for data in hubbard_u:
         hubbard_structure.initialize_onsites_hubbard(*data)
     for data in hubbard_v:
@@ -52,27 +61,38 @@ def get_builder(codes, structure, parameters, **kwargs):
     hubbard = parameters.get("hp", {})
     parallelize_atoms = hubbard.get("parallelize_atoms", False)
     parallelize_qpoints = hubbard.get("parallelize_qpoints", False)
-    builder = QeappHpWorkChain.get_builder_from_protocol(
+    overrides = {
+        "tolerance_onsite": orm.Float(PROTOCOL_MAP_U[protocol]),
+        "tolerance_intersite": orm.Float(PROTOCOL_MAP_V[protocol]),
+        "hubbard": {
+            "parallelize_atoms": orm.Bool(parallelize_atoms),
+            "parallelize_qpoints": orm.Bool(parallelize_qpoints),
+            "qpoints_distance": QPOINTS_DISTANCE_MAP[protocol],
+        },
+    }
+    builder = SelfConsistentHubbardWorkChain.get_builder_from_protocol(
         pw_code=pw_code,
         hp_code=hp_code,  # modify here if you downloaded the notebook
         hubbard_structure=hubbard_structure,
         protocol=protocol,
-        method=method,
-        parallelize_atoms=parallelize_atoms,
-        parallelize_qpoints=parallelize_qpoints,
-        qpoints_distance=qpoints_distance_map[protocol],
+        overrides=overrides,
         electronic_type=ElectronicType(parameters["workchain"]["electronic_type"]),
         spin_type=SpinType(parameters["workchain"]["spin_type"]),
         initial_magnetic_moments=parameters["advanced"]["initial_magnetic_moments"],
         **kwargs,
     )
+    method = parameters["hp"].pop("method")
+    if method == "one-shot":
+        builder.max_iterations = orm.Int(1)
+        builder.meta_convergence = orm.Bool(False)
+        builder.pop("relax", None)
     builder.pop("clean_workdir", None)
 
     return builder
 
 
 workchain_and_builder = {
-    "workchain": QeappHpWorkChain,
+    "workchain": SelfConsistentHubbardWorkChain,
     "exclude": ("clean_workdir", "structure"),
     "get_builder": get_builder,
 }

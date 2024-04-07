@@ -33,7 +33,6 @@ def test_app():
     configure_step.settings["hp"].hubbard_v_map[("Co", "O")][0].value = True
     configure_step.settings["hp"].hubbard_v_map[("Co", "O")][2].value = "3d"
     configure_step.settings["hp"].hubbard_v_map[("Co", "O")][4].value = "2p"
-    configure_step.settings["hp"].hubbard_v_map[("Co", "O")][5].value = 1.0
     configure_step.confirm()
     #
     app.submit_step.pw_code.refresh()
@@ -119,7 +118,6 @@ def test_app_scf():
     configure_step.settings["hp"].hubbard_v_map[("Co", "O")][0].value = True
     configure_step.settings["hp"].hubbard_v_map[("Co", "O")][2].value = "3d"
     configure_step.settings["hp"].hubbard_v_map[("Co", "O")][4].value = "2p"
-    configure_step.settings["hp"].hubbard_v_map[("Co", "O")][5].value = 1.0
     configure_step.confirm()
     #
     app.submit_step.pw_code.refresh()

@@ -32,9 +32,6 @@ setup(
         "weas-widgets",
     ],
     entry_points={
-        "aiida.workflows": [
-            "aiidalab_qe_hp = aiidalab_qe_hp.workflows",
-        ],
         "aiidalab_qe.properties": [
             "hp = aiidalab_qe_hp:hp",
         ],
