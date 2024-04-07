@@ -1,5 +1,6 @@
 import ipywidgets as ipw
 from aiidalab_qe.common.panel import ResultPanel
+from weas_widget import WeasWidget
 
 
 class Result(ResultPanel):
@@ -9,19 +10,41 @@ class Result(ResultPanel):
     def __init__(self, node=None, **kwargs):
         super().__init__(node=node, **kwargs)
         self.summary_view = ipw.HTML()
+        guiConfig = {
+            "enabled": True,
+            "components": {"atomsControl": True, "buttons": True},
+            "buttons": {
+                "fullscreen": True,
+                "download": True,
+                "measurement": True,
+            },
+        }
+        self.structure_view = WeasWidget(guiConfig=guiConfig)
 
     def _update_view(self):
         if "one_shot" in self.node.inputs.hp:
             hubbard_structure = self.node.outputs.hp.one_shot.hubbard_structure
         else:
             hubbard_structure = self.node.outputs.hp.scf_hubbard.hubbard_structure
+        self._update_structure(hubbard_structure)
         self._generate_table(hubbard_structure)
         self.children = [
-            ipw.HBox(
-                children=[self.summary_view],
+            ipw.VBox(
+                children=[
+                    self.summary_view,
+                    ipw.VBox([ipw.HTML("""<h4>Structure</h4>"""), self.structure_view]),
+                ],
                 layout=ipw.Layout(justify_content="space-between", margin="10px"),
             ),
         ]
+
+    def _update_structure(self, hubbard_structure):
+        atoms = hubbard_structure.get_ase()
+        # create a supercell around the atoms, from -1 to 1 in each direction
+        # atoms = atoms.repeat([3, 3, 3])
+        # print("atoms: ", atoms)
+        self.structure_view.from_ase(atoms)
+        self.structure_view.avr.model_style = 1
 
     def _generate_table(self, hubbard_structure):
         # Start of the HTML string for the table

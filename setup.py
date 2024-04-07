@@ -28,7 +28,9 @@ setup(
     license="MIT License",
     classifiers=[],
     packages=find_packages(),
-    install_requires=[],
+    install_requires=[
+        "weas-widgets",
+    ],
     entry_points={
         "aiida.workflows": [
             "aiidalab_qe_hp = aiidalab_qe_hp.workflows",
