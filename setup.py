@@ -29,7 +29,7 @@ setup(
     classifiers=[],
     packages=find_packages(),
     install_requires=[
-        "weas-widgets",
+        "weas-widget",
     ],
     entry_points={
         "aiidalab_qe.properties": [

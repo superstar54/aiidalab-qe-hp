@@ -4,8 +4,11 @@
 """
 import ipywidgets as ipw
 import traitlets as tl
-from aiida.orm import StructureData
-
+from aiida.orm import StructureData, Float, Bool
+from aiida_quantumespresso.workflows.pw.base import PwBaseWorkChain
+from aiida_quantumespresso.calculations.functions.create_kpoints_from_distance import (
+    create_kpoints_from_distance,
+)
 from aiidalab_qe.common.panel import Panel
 
 
@@ -63,15 +66,16 @@ class Setting(Panel):
             disabled=False,
             style={"description_width": "initial"},
         )
-
+        self.qpoint_mesh = ipw.HTML()
         self.hubbard_u = ipw.VBox()
         self.hubbard_v = ipw.VBox()
-        # self.qpoints_distance = ipw.FloatText(
-        #     value=1000,
-        #     description="qpoints_distance:",
-        #     disabled=False,
-        #     style={"description_width": "initial"},
-        # )
+        self.qpoints_distance = ipw.BoundedFloatText(
+            min=0.0,
+            step=0.05,
+            description="q-points distance (1/Å):",
+            disabled=False,
+            style={"description_width": "initial"},
+        )
         self.parallelize_atoms = ipw.Checkbox(
             description="Use parallelization over perturbed Hubbard atoms.",
             indent=False,
@@ -89,6 +93,7 @@ class Setting(Panel):
         self.method.observe(self._on_method_change, names="value")
         self.calculation_type.observe(self._on_calculation_type_change, names="value")
         self.projector_type.observe(self._on_projector_type_change, names="value")
+        self.qpoints_distance.observe(self._on_qpoints_distance_change, names="value")
 
         self.children = [
             ipw.HBox(children=[self.method, self.method_description]),
@@ -97,6 +102,7 @@ class Setting(Panel):
             ),
             ipw.HBox(children=[self.projector_type, self.projector_type_description]),
             # self.qpoints_distance,
+            ipw.HBox([self.qpoints_distance, self.qpoint_mesh]),
             self.parallelize_atoms,
             self.parallelize_qpoints,
             ipw.VBox(layout=ipw.Layout(border="1px solid black")),
@@ -105,6 +111,12 @@ class Setting(Panel):
             self.Info,
         ]
         super().__init__(**kwargs)
+
+    @tl.observe("protocol")
+    def _protocol_changed(self, _):
+        """Input protocol changed, update the widget values."""
+        parameters = PwBaseWorkChain.get_protocol_inputs(self.protocol)
+        self.qpoints_distance.value = parameters["kpoints_distance"] * 6
 
     def _on_method_change(self, _=None):
         if self.method.value == "one-shot":
@@ -124,6 +136,19 @@ class Setting(Panel):
             self.projector_type_description.value = self.atomic_description
         else:
             self.projector_type_description.value = self.ortho_atomic_description
+
+    def _on_qpoints_distance_change(self, _=None):
+        if self.input_structure is None:
+            return
+        if self.qpoints_distance.value > 0:
+            mesh = create_kpoints_from_distance.process_class._func(
+                self.input_structure,
+                Float(self.qpoints_distance.value),
+                Bool(False),
+            )
+            self.qpoint_mesh.value = "Mesh " + str(mesh.get_kpoints_mesh()[0])
+        else:
+            self.qpoint_mesh.value = "Please select a number higher than 0.0"
 
     def get_panel_value(self):
         """Return a dictionary with the input parameters for the plugin."""
@@ -145,7 +170,7 @@ class Setting(Panel):
         ]
         parameters = {
             "method": self.method.value,
-            # "qpoints_distance": self.qpoints_distance.value,
+            "qpoints_distance": self.qpoints_distance.value,
             "parallelize_atoms": self.parallelize_atoms.value,
             "parallelize_qpoints": self.parallelize_qpoints.value,
             "calculation_type": self.calculation_type.value,
@@ -158,7 +183,7 @@ class Setting(Panel):
     def set_panel_value(self, input_dict):
         """Load a dictionary with the input parameters for the plugin."""
         self.method.value = input_dict.get("method", "one-shot")
-        # self.qpoints_distance.value = input_dict.get("qpoints_distance", 1000)
+        self.qpoints_distance.value = input_dict.get("qpoints_distance", 1000)
         self.parallelize_atoms.value = input_dict.get("parallelize_atoms", True)
         self.parallelize_qpoints.value = input_dict.get("parallelize_qpoints", True)
         self.calculation_type.value = input_dict.get("calculation_type", "DFT+U")

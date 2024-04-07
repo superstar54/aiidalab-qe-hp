@@ -1,6 +1,5 @@
 from aiida_quantumespresso.data.hubbard_structure import HubbardStructureData
 from aiida_quantumespresso.common.types import ElectronicType, SpinType
-from aiidalab_qe_hp.workflows import QeappHpWorkChain
 from aiida_quantumespresso_hp.workflows.hubbard import SelfConsistentHubbardWorkChain
 from aiida import orm
 
