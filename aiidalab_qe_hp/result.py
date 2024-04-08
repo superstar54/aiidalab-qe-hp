@@ -55,19 +55,33 @@ class Result(ResultPanel):
             self.hubbard_structure = self.node.outputs.hp.hubbard_structure
         self._update_structure(self.hubbard_structure)
         self._generate_table(self.hubbard_structure)
+        table_help = ipw.HTML(
+            """
+            <div style='margin: 10px 0;'>
+                <h4 style='margin-bottom: 5px; color: #3178C6;'>Result</h4>
+            </div>
+            """,
+            layout=ipw.Layout(margin="0 0 20px 0"),  # Adjust the margin as needed
+        )
+        structure_help = ipw.HTML(
+            """
+            <div style='margin: 10px 0;'>
+                <h4 style='margin-bottom: 5px; color: #3178C6;'>Structure</h4>
+                <p style='margin: 5px 0; font-size: 14px;'>
+                    Click on the row above to highlight the specific atoms pair for which the inter-site Hubbard V is being calculated.
+                </p>
+                <p style='margin: 5px 0; font-size: 14px; color: #555;'>
+                    <i>Note:</i> the index value in the structure view is one smaller than the value in the table.
+                </p>
+            </div>
+            """,
+            layout=ipw.Layout(margin="0 0 20px 0"),  # Adjust the margin as needed
+        )
         self.children = [
             ipw.VBox(
                 children=[
-                    self.result_table,
-                    ipw.VBox(
-                        [
-                            ipw.HTML(
-                                """<h4>Structure</h4> <p>Click on the row above to highlight the specific atoms couple whose inter-site Hubbard V is being calculated.
-</p>"""
-                            ),
-                            self.structure_view,
-                        ]
-                    ),
+                    ipw.VBox([table_help, self.result_table]),
+                    ipw.VBox([structure_help, self.structure_view]),
                 ],
                 layout=ipw.Layout(justify_content="space-between", margin="10px"),
             ),
@@ -98,13 +112,13 @@ class Result(ResultPanel):
 
         data = [
             [
-                "Hubbard",
-                "Kind-Manifold (I)",
-                "Kind-Neighbour(J)",
+                "Hubbard parameters",
+                "Atoms (I)",
+                "Atoms (J)",
                 "Index (I)",
                 "Index (J)",
                 "Value (eV)",
-                "Translation",
+                "Translation vector",
                 "Distance (Å)",
             ]
         ]

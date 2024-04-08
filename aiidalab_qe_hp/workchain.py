@@ -87,6 +87,6 @@ def get_builder(codes, structure, parameters, **kwargs):
 
 workchain_and_builder = {
     "workchain": SelfConsistentHubbardWorkChain,
-    "exclude": ("clean_workdir", "structure"),
+    "exclude": ("structure",),
     "get_builder": get_builder,
 }

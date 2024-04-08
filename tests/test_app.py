@@ -39,6 +39,8 @@ def test_app():
     app.submit_step.pw_code.value = pw_code.uuid
     app.submit_step.codes["hp"].value = hp_code.uuid
     app.submit_step.resources_config.num_cpus.value = 4
+    # builder = app.submit_step._create_builder()
+    # print("builder", builder)
     app.submit_step.submit()
 
 

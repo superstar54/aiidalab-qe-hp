@@ -69,6 +69,14 @@ class Setting(Panel):
         self.qpoint_mesh = ipw.HTML()
         self.hubbard_u = ipw.VBox()
         self.hubbard_v = ipw.VBox()
+        # Override setting widget
+        self.qpoints_override_prompt = ipw.HTML("<b>&nbsp;&nbsp;Override&nbsp;</b>")
+        self.qpoints_override = ipw.Checkbox(
+            description="",
+            indent=False,
+            value=False,
+            layout=ipw.Layout(max_width="10%"),
+        )
         self.qpoints_distance = ipw.BoundedFloatText(
             min=0.0,
             step=0.05,
@@ -94,7 +102,11 @@ class Setting(Panel):
         self.calculation_type.observe(self._on_calculation_type_change, names="value")
         self.projector_type.observe(self._on_projector_type_change, names="value")
         self.qpoints_distance.observe(self._on_qpoints_distance_change, names="value")
-
+        ipw.dlink(
+            (self.qpoints_override, "value"),
+            (self.qpoints_distance, "disabled"),
+            lambda override: not override,
+        )
         self.children = [
             ipw.HBox(children=[self.method, self.method_description]),
             ipw.HBox(
@@ -102,7 +114,14 @@ class Setting(Panel):
             ),
             ipw.HBox(children=[self.projector_type, self.projector_type_description]),
             # self.qpoints_distance,
-            ipw.HBox([self.qpoints_distance, self.qpoint_mesh]),
+            ipw.HBox(
+                [
+                    self.qpoints_distance,
+                    self.qpoint_mesh,
+                    self.qpoints_override_prompt,
+                    self.qpoints_override,
+                ]
+            ),
             self.parallelize_atoms,
             self.parallelize_qpoints,
             ipw.VBox(layout=ipw.Layout(border="1px solid black")),
@@ -116,7 +135,7 @@ class Setting(Panel):
     def _protocol_changed(self, _):
         """Input protocol changed, update the widget values."""
         parameters = PwBaseWorkChain.get_protocol_inputs(self.protocol)
-        self.qpoints_distance.value = parameters["kpoints_distance"] * 6
+        self.qpoints_distance.value = parameters["kpoints_distance"] * 4
 
     def _on_method_change(self, _=None):
         if self.method.value == "one-shot":
