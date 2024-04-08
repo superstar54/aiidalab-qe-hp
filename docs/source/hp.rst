@@ -36,9 +36,9 @@ In the **Basic Settings** tab, set the following parameters:
    :align: center
 
 
-Then go to the **HP setting** tab and, in the **Hubbard U** section, select ``Co`` by ticking the appropriate box.
+Then go to the **HP setting** tab and, in the **Select atoms for which on-site Hubbard U must be computed** section, select ``Co`` by ticking the appropriate box.
 Set the **Manifold** to ``3d``.
-In the **Hubbard V** section, select first row by ticking the appropriate box.
+In the **Select couples of atoms for which inter-site Hubbard V must be computed** section, select first row by ticking the appropriate box.
 Set the **Manifold** to ``3d`` and ``2p`` for the **Co** atom and **O** atom, respectively.
 
 .. image:: ../_static/images/hp_step_2_hp_setting.png
@@ -80,11 +80,17 @@ When the job is finished, you can view result spectra in the `HP` tab.
    If the `HP` tab is now shown when the jobs is finished.
    Click the ``QeAppWorkChain<pk>`` item on top of the nodetree to refresh the step.
 
-Here is the result of the HP calculation.
+Here is the result of the HP calculation. It includes:
+- the Hubbard data for the structure
+- the Structure viewer
+
+Click on the row above to highlight the specific atoms couple whose inter-site Hubbard V is being calculated.
 
 
 .. figure:: /_static/images/hp_step_4_xps_tab.png
    :align: center
+
+
 
 
 Congratulations, you have finished this tutorial!

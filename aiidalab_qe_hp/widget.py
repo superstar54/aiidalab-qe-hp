@@ -58,6 +58,10 @@ class TableWidget(anywidget.AnyWidget):
         width: 100%;
         font-size: 1.2em;
     }
+    /* hover effect */
+    .custom-table tr:not(:first-child):hover { /* Exclude the header row from hover effect */
+        background-color: #f5f5f5; /* Light grey background on hover */
+    }
     """
     data = traitlets.List().tag(sync=True)
     row_index = traitlets.Int().tag(sync=True)

@@ -31,19 +31,21 @@ class Result(ResultPanel):
                 i - 1 for i in self.result_table.data[change["new"] + 1][3:5]
             ]
             self.structure_view.avr.selected_atoms_indices = selected_atoms_indices
+            self.structure_view.camera.look_at = self.hubbard_structure.sites[selected_atoms_indices[0]].position
 
     def _update_view(self):
         if "relax" not in self.node.inputs.hp:
-            hubbard_structure = self.node.outputs.hp.hubbard_structure
+            self.hubbard_structure = self.node.outputs.hp.hubbard_structure
         else:
-            hubbard_structure = self.node.outputs.hp.hubbard_structure
-        self._update_structure(hubbard_structure)
-        self._generate_table(hubbard_structure)
+            self.hubbard_structure = self.node.outputs.hp.hubbard_structure
+        self._update_structure(self.hubbard_structure)
+        self._generate_table(self.hubbard_structure)
         self.children = [
             ipw.VBox(
                 children=[
                     self.result_table,
-                    ipw.VBox([ipw.HTML("""<h4>Structure</h4>"""), self.structure_view]),
+                    ipw.VBox([ipw.HTML("""<h4>Structure</h4> <p>Click on the row above to highlight the specific atoms couple whose inter-site Hubbard V is being calculated.
+</p>"""), self.structure_view]),
                 ],
                 layout=ipw.Layout(justify_content="space-between", margin="10px"),
             ),

@@ -3,11 +3,6 @@ from aiida_quantumespresso.common.types import ElectronicType, SpinType
 from aiida_quantumespresso_hp.workflows.hubbard import SelfConsistentHubbardWorkChain
 from aiida import orm
 
-QPOINTS_DISTANCE_MAP = {
-    "fast": 1000,
-    "moderate": 500,
-    "precise": 100,
-}
 
 PROTOCOL_MAP_U = {"fast": 1.0, "moderate": 0.5, "precise": 0.1}
 
@@ -66,7 +61,7 @@ def get_builder(codes, structure, parameters, **kwargs):
         "hubbard": {
             "parallelize_atoms": orm.Bool(parallelize_atoms),
             "parallelize_qpoints": orm.Bool(parallelize_qpoints),
-            "qpoints_distance": QPOINTS_DISTANCE_MAP[protocol],
+            "qpoints_distance": orm.Float(hubbard.get("qpoints_distance", 1)),
         },
     }
     builder = SelfConsistentHubbardWorkChain.get_builder_from_protocol(
