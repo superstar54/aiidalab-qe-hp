@@ -24,6 +24,7 @@ class Result(ResultPanel):
         }
         self.structure_view = WeasWidget(guiConfig=guiConfig)
         self.result_table.observe(self._process_row_index, "row_index")
+        self.structure_view_ready = False
 
     def _process_row_index(self, change):
         if change["new"] is not None:
@@ -31,7 +32,21 @@ class Result(ResultPanel):
                 i - 1 for i in self.result_table.data[change["new"] + 1][3:5]
             ]
             self.structure_view.avr.selected_atoms_indices = selected_atoms_indices
-            self.structure_view.camera.look_at = self.hubbard_structure.sites[selected_atoms_indices[0]].position
+            self.structure_view.camera.look_at = self.hubbard_structure.sites[
+                selected_atoms_indices[0]
+            ].position
+            # trigger the resize event to update the view
+            if not self.structure_view_ready:
+                self.structure_view._widget.send_js_task(
+                    {"name": "tjs.onWindowResize", "kwargs": {}}
+                )
+                self.structure_view._widget.send_js_task(
+                    {
+                        "name": "tjs.updateCameraAndControls",
+                        "kwargs": {"direction": [0, -100, 0]},
+                    }
+                )
+                self.structure_view_ready = True
 
     def _update_view(self):
         if "relax" not in self.node.inputs.hp:
@@ -44,8 +59,15 @@ class Result(ResultPanel):
             ipw.VBox(
                 children=[
                     self.result_table,
-                    ipw.VBox([ipw.HTML("""<h4>Structure</h4> <p>Click on the row above to highlight the specific atoms couple whose inter-site Hubbard V is being calculated.
-</p>"""), self.structure_view]),
+                    ipw.VBox(
+                        [
+                            ipw.HTML(
+                                """<h4>Structure</h4> <p>Click on the row above to highlight the specific atoms couple whose inter-site Hubbard V is being calculated.
+</p>"""
+                            ),
+                            self.structure_view,
+                        ]
+                    ),
                 ],
                 layout=ipw.Layout(justify_content="space-between", margin="10px"),
             ),
