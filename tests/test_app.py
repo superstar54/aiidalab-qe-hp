@@ -27,6 +27,7 @@ def test_app():
     configure_step.set_configuration_parameters(parameters)
     #
     configure_step.settings["hp"].calculation_type.value = "DFT+U+V"
+    configure_step.settings["hp"].qpoints_distance.value = 3.0
     configure_step.settings["hp"].hubbard_u_map["Co"][0].value = True
     configure_step.settings["hp"].hubbard_u_map["Co"][2].value = "3d"
     configure_step.settings["hp"].hubbard_u_map["Co"][3].value = 3.0
@@ -35,10 +36,11 @@ def test_app():
     configure_step.settings["hp"].hubbard_v_map[("Co", "O")][4].value = "2p"
     configure_step.confirm()
     #
-    app.submit_step.pw_code.refresh()
-    app.submit_step.pw_code.value = pw_code.uuid
-    app.submit_step.codes["hp"].value = hp_code.uuid
-    app.submit_step.resources_config.num_cpus.value = 4
+    app.submit_step.pw_code.code_selection.refresh()
+    app.submit_step.pw_code.code_selection.value = pw_code.uuid
+    app.submit_step.pw_code.num_cpus.value = 4
+    app.submit_step.codes["hp"].code_selection.value = hp_code.uuid
+    app.submit_step.codes["hp"].num_cpus.value = 4
     # builder = app.submit_step._create_builder()
     # print("builder", builder)
     app.submit_step.submit()
@@ -77,10 +79,11 @@ def test_app_hubbard_u():
     configure_step.settings["hp"].hubbard_u_map["Co"][3].value = 3.0
     configure_step.confirm()
     #
-    app.submit_step.pw_code.refresh()
-    app.submit_step.pw_code.value = pw_code.uuid
-    app.submit_step.codes["hp"].value = hp_code.uuid
-    app.submit_step.resources_config.num_cpus.value = 4
+    app.submit_step.pw_code.code_selection.refresh()
+    app.submit_step.pw_code.code_selection.value = pw_code.uuid
+    app.submit_step.pw_code.num_cpus.value = 4
+    app.submit_step.codes["hp"].code_selection.value = hp_code.uuid
+    app.submit_step.codes["hp"].num_cpus.value = 4
     app.submit_step.submit()
 
 
@@ -122,8 +125,9 @@ def test_app_scf():
     configure_step.settings["hp"].hubbard_v_map[("Co", "O")][4].value = "2p"
     configure_step.confirm()
     #
-    app.submit_step.pw_code.refresh()
-    app.submit_step.pw_code.value = pw_code.uuid
-    app.submit_step.codes["hp"].value = hp_code.uuid
-    app.submit_step.resources_config.num_cpus.value = 6
+    app.submit_step.pw_code.code_selection.refresh()
+    app.submit_step.pw_code.code_selection.value = pw_code.uuid
+    app.submit_step.pw_code.num_cpus.value = 4
+    app.submit_step.codes["hp"].code_selection.value = hp_code.uuid
+    app.submit_step.codes["hp"].num_cpus.value = 4
     app.submit_step.submit()

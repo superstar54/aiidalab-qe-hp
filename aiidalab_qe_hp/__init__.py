@@ -1,5 +1,5 @@
 from aiidalab_qe.common.panel import OutlinePanel
-from aiidalab_widgets_base import ComputationalResourcesWidget
+from aiidalab_qe.common.widgets import QEAppComputationalResourcesWidget
 
 from .result import Result
 from .setting import Setting
@@ -13,7 +13,7 @@ class HpOutline(OutlinePanel):
     help = """"""
 
 
-hp_code = ComputationalResourcesWidget(
+hp_code = QEAppComputationalResourcesWidget(
     description="hp.x",
     default_calc_job_plugin="quantumespresso.hp",
 )

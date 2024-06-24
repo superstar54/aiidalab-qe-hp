@@ -2,6 +2,7 @@ from aiida_quantumespresso.data.hubbard_structure import HubbardStructureData
 from aiida_quantumespresso.common.types import ElectronicType, SpinType
 from aiida_quantumespresso_hp.workflows.hubbard import SelfConsistentHubbardWorkChain
 from aiida import orm
+from aiidalab_qe.plugins.utils import set_component_resources
 
 
 PROTOCOL_MAP_U = {"fast": 1.0, "moderate": 0.5, "precise": 0.1}
@@ -38,9 +39,15 @@ def check_codes(pw_code, hp_code):
         )
 
 
+def update_resources(builder, codes):
+    set_component_resources(builder.relax.base.pw, codes.get("pw"))
+    set_component_resources(builder.scf.pw, codes.get("pw"))
+    set_component_resources(builder.hubbard.hp, codes.get("hp"))
+
+
 def get_builder(codes, structure, parameters, **kwargs):
-    pw_code = codes.get("pw")
-    hp_code = codes.get("hp")
+    pw_code = codes.get("pw")["code"]
+    hp_code = codes.get("hp")["code"]
     check_codes(pw_code, hp_code)
     protocol = parameters["workchain"]["protocol"]
     # generate Hubbard structure
@@ -75,11 +82,14 @@ def get_builder(codes, structure, parameters, **kwargs):
         initial_magnetic_moments=parameters["advanced"]["initial_magnetic_moments"],
         **kwargs,
     )
+    # update resources
+    update_resources(builder, codes)
     method = parameters["hp"].pop("method")
     if method == "one-shot":
         builder.max_iterations = orm.Int(1)
         builder.meta_convergence = orm.Bool(False)
         builder.pop("relax", None)
+
     builder.pop("clean_workdir", None)
 
     return builder
