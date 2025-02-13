@@ -8,7 +8,7 @@ from .workchain import workchain_and_builder
 from .result import HpResultsPanel, HpResultsModel
 
 
-__version__ = '0.1.0a1'
+__version__ = '0.1.0'
 
 
 
