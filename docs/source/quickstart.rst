@@ -30,7 +30,7 @@ In the **Basic Settings** tab, set the following parameters:
 
 - In the **Structure optimization** section, select ``Structure as is``.
 - Set **Electronic Type** to ``Insulator``
-- In the **properties** section, select ``Habbard parameter (HP)``
+- In the **properties** section, select ``Hubbard parameter (HP)``
 
 .. image:: _static/images/hp_step_2_basic_setting.png
    :align: center

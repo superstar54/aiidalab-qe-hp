@@ -22,6 +22,7 @@ classifiers = [
 dependencies = [
   "aiida-core>=2.3",
   "aiida-quantumespresso>=4.8",
+  "aiida-hubbard>=0.1.0",
   "weas-widget>=0.1.24",
   "table-widget>=0.0.3"
 ]

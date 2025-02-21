@@ -13,7 +13,7 @@ __version__ = '0.1.0'
 
 
 class PluginOutline(PluginOutline):
-    title = 'Habbard parameter (HP)'
+    title = 'Hubbard parameter (HP)'
     help = """"""
 
 
