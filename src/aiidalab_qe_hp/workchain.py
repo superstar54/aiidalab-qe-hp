@@ -1,6 +1,6 @@
 from aiida_quantumespresso.data.hubbard_structure import HubbardStructureData
 from aiida_quantumespresso.common.types import ElectronicType, SpinType
-from aiida_quantumespresso_hp.workflows.hubbard import SelfConsistentHubbardWorkChain
+from aiida_hubbard.workflows.hubbard import SelfConsistentHubbardWorkChain
 from aiida import orm
 from aiidalab_qe.utils import (
     enable_pencil_decomposition,
@@ -8,12 +8,12 @@ from aiidalab_qe.utils import (
 )
 
 
-PROTOCOL_MAP_U = {'fast': 1.0, 'moderate': 0.5, 'precise': 0.1}
+PROTOCOL_MAP_U = {'fast': 1.0, 'balanced': 0.5, 'stringent': 0.1}
 
 PROTOCOL_MAP_V = {
     'fast': 0.5,
-    'moderate': 0.1,
-    'precise': 0.02,
+    'balanced': 0.1,
+    'stringent': 0.02,
 }
 
 
