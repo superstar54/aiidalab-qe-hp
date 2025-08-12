@@ -21,6 +21,7 @@ class HPSettingsModel(ConfigurationSettingsModel, HasInputStructure):
     parallelize_atoms = tl.Bool(default_value=True)
     parallelize_qpoints = tl.Bool(default_value=True)
     protocol = tl.Unicode(allow_none=True)
+    relax_type = tl.Unicode(default_value='cell')
 
     # Hubbard U, V will be stored as lists-of-lists or something similar
     # e.g. each entry in hubbard_u might be [kind_name, manifold, U-value],
@@ -32,6 +33,7 @@ class HPSettingsModel(ConfigurationSettingsModel, HasInputStructure):
         """Return a dictionary capturing the current model state."""
         return {
             'method': self.method,
+            'relax_type': self.relax_type,
             'calculation_type': self.calculation_type,
             'projector_type': self.projector_type,
             'qpoints_distance': self.qpoints_distance,
@@ -44,6 +46,7 @@ class HPSettingsModel(ConfigurationSettingsModel, HasInputStructure):
     def set_model_state(self, parameters: dict):
         """Set the model state from a given dictionary."""
         self.method = parameters.get('method', 'one-shot')
+        self.relax_type = parameters.get('relax_type', 'cell')
         self.calculation_type = parameters.get('calculation_type', 'DFT+U')
         self.projector_type = parameters.get('projector_type', 'ortho-atomic')
         self.qpoints_distance = parameters.get('qpoints_distance', 1.0)
