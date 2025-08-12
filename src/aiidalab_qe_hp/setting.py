@@ -19,6 +19,7 @@ class HPSettingsPanel(ConfigurationSettingsPanel[HPSettingsModel]):
     dft_u_v_description = """<div>On-site U and inter-site V Hubbard parameters are computed. </div>"""
     atomic_description = """<div>Non-orthogonalized atomic orbitals. </div>"""
     ortho_atomic_description = """<div>Löwdin-orthogonalized atomic orbitals. </div>"""
+    relax_description = """<div>Choose between cell relaxation (default) or atomic relaxation.</div>"""
 
     def __init__(self, model: HPSettingsModel, **kwargs):
         super().__init__(model=model, **kwargs)
@@ -82,6 +83,14 @@ class HPSettingsPanel(ConfigurationSettingsPanel[HPSettingsModel]):
         )
         self.hubbard_v = ipw.VBox()
 
+        #Options RelaxType
+        self.relax_type = ipw.Dropdown(
+            options=['atomic', 'cell'],
+            description='Relaxation type:',
+            style={'description_width': 'initial'},
+            layout=ipw.Layout(display='none'),
+        )
+        self.relax_type_description = ipw.HTML()
         # Info/warning area:
         self.Info = ipw.HTML()
 
@@ -101,6 +110,8 @@ class HPSettingsPanel(ConfigurationSettingsPanel[HPSettingsModel]):
         ipw.link((self._model, 'parallelize_atoms'), (self.parallelize_atoms, 'value'))
         ipw.link((self._model, 'parallelize_qpoints'), (self.parallelize_qpoints, 'value'))
 
+        ipw.link((self._model, 'relax_type'), (self.relax_type, 'value'))
+
         # Example of disabling qpoints_distance if not overridden:
         def _toggle_distance(change):
             self.qpoints_distance.disabled = not change['new']
@@ -113,6 +124,7 @@ class HPSettingsPanel(ConfigurationSettingsPanel[HPSettingsModel]):
         # 4) Arrange them in self.children
         self.children = [
             ipw.HBox([self.method, self.method_description]),
+            self.relax_type,
             ipw.HBox([self.calculation_type, self.calculation_type_description]),
             ipw.HBox([self.projector_type, self.projector_type_description]),
             ipw.HBox([
@@ -129,6 +141,7 @@ class HPSettingsPanel(ConfigurationSettingsPanel[HPSettingsModel]):
             self.Info,
         ]
 
+        #self.relax_type.layout.display = "none"
         # Mark that we've built everything:
         self.rendered = True
 
@@ -145,7 +158,11 @@ class HPSettingsPanel(ConfigurationSettingsPanel[HPSettingsModel]):
     def _sync_method_description(self, _=None):
         if self.method.value == 'one-shot':
             self.method_description.value = self.one_shot_description
+            #self.relax_type_description.value = ""
+            self.relax_type.layout.display = 'none'
         else:
+            self.relax_type.layout.display = 'block'
+            #self.relax_type_description.value = self.relax_description
             self.method_description.value = self.self_consistent_description
 
     def _sync_calculation_type_description(self, _=None):
