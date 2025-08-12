@@ -66,7 +66,7 @@ def get_builder(codes, structure, parameters, **kwargs):
     parallelize_atoms = hubbard.get('parallelize_atoms', False)
     parallelize_qpoints = hubbard.get('parallelize_qpoints', False)
 
-    relax_type = parameters['workchain']['relax_type']
+    relax_type = parameters['hp']['relax_type']
     overrides = {
         'tolerance_onsite': orm.Float(PROTOCOL_MAP_U[protocol]),
         'tolerance_intersite': orm.Float(PROTOCOL_MAP_V[protocol]),
