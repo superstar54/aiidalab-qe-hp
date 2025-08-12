@@ -84,7 +84,7 @@ def get_builder(codes, structure, parameters, **kwargs):
         overrides=overrides,
         electronic_type=ElectronicType(parameters['workchain']['electronic_type']),
         spin_type=SpinType(parameters['workchain']['spin_type']),
-        relax_type=RelaxType.POSITION if relax_type == 'atomic' else RelaxType.POSITIONS_CELL,
+        relax_type=RelaxType.POSITIONS if relax_type == 'atomic' else RelaxType.POSITIONS_CELL,
         initial_magnetic_moments=parameters['advanced']['initial_magnetic_moments'],
         **kwargs,
     )
