@@ -49,6 +49,8 @@ def update_resources(builder, codes):
 
 
 def get_builder(codes, structure, parameters, **kwargs):
+
+
     pw_code = codes.get('pw')['code']
     hp_code = codes.get('hp')['code']
     check_codes(pw_code, hp_code)
@@ -67,6 +69,12 @@ def get_builder(codes, structure, parameters, **kwargs):
     parallelize_qpoints = hubbard.get('parallelize_qpoints', False)
 
     relax_type = parameters['hp']['relax_type']
+
+    scf_overrides = parameters['advanced']
+    relax_overrides = {
+        'base': parameters['advanced'],
+        'base_final_scf': parameters['advanced'],
+    }
     overrides = {
         'tolerance_onsite': orm.Float(PROTOCOL_MAP_U[protocol]),
         'tolerance_intersite': orm.Float(PROTOCOL_MAP_V[protocol]),
@@ -75,6 +83,8 @@ def get_builder(codes, structure, parameters, **kwargs):
             'parallelize_qpoints': orm.Bool(parallelize_qpoints),
             'qpoints_distance': orm.Float(hubbard.get('qpoints_distance', 1)),
         },
+        'relax': relax_overrides,
+        'scf': scf_overrides,
     }
     builder = SelfConsistentHubbardWorkChain.get_builder_from_protocol(
         pw_code=pw_code,
